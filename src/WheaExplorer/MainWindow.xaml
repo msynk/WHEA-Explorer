@@ -1,0 +1,144 @@
+<Window x:Class="WheaExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="WHEA Explorer"
+        Height="720" Width="1120"
+        MinHeight="480" MinWidth="800"
+        Background="{StaticResource PanelBg}">
+    <DockPanel Margin="10">
+        <StatusBar DockPanel.Dock="Bottom" Background="#E8E8EE">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360" MinWidth="260"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="*" MinWidth="320"/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Column="0">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                    <Button x:Name="RefreshButton" Content="Refresh logs" Padding="12,6" Click="RefreshButton_OnClick"/>
+                    <TextBlock x:Name="CountLabel" VerticalAlignment="Center" Margin="12,0,0,0" Foreground="#555"/>
+                </StackPanel>
+                <ListView x:Name="LogListView"
+                          SelectionChanged="LogListView_OnSelectionChanged"
+                          BorderBrush="{StaticResource BorderBrush}"
+                          Background="White">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Time (local)" Width="148" DisplayMemberBinding="{Binding TimeDisplay}"/>
+                            <GridViewColumn Header="Channel" Width="96" DisplayMemberBinding="{Binding ChannelShort}"/>
+                            <GridViewColumn Header="Id" Width="40" DisplayMemberBinding="{Binding EventId}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+
+            <DockPanel Grid.Column="2">
+                <Border DockPanel.Dock="Top" Background="#ECECF2" CornerRadius="6" Padding="10,8" Margin="0,0,0,8" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Decoded view" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,16,0"/>
+                        <RadioButton x:Name="ViewJsonRadio" Content="JSON" IsChecked="True" GroupName="DecodedView" Margin="0,0,12,0" VerticalAlignment="Center" Checked="ViewMode_OnChanged"/>
+                        <RadioButton x:Name="ViewTreeRadio" Content="Tree" GroupName="DecodedView" VerticalAlignment="Center" Checked="ViewMode_OnChanged"/>
+                    </StackPanel>
+                </Border>
+
+                <TabControl x:Name="RightTabs" BorderBrush="{StaticResource BorderBrush}">
+                    <TabItem Header="Selected event">
+                        <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="#444"
+                                       Text="Structured fields for the selected log entry. Expand nodes in Tree view to browse nested data."/>
+                            <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Background="White">
+                                <Grid>
+                                    <TextBox x:Name="SelectionJsonText"
+                                             IsReadOnly="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             FontFamily="Consolas"
+                                             FontSize="12"
+                                             TextWrapping="NoWrap"
+                                             Background="#FAFAFC"
+                                             BorderThickness="0"
+                                             Padding="8"/>
+                                    <TreeView x:Name="SelectionTreeView"
+                                              Visibility="Collapsed"
+                                              BorderThickness="0"
+                                              Padding="4,8"
+                                              FontSize="13"
+                                              VirtualizingStackPanel.IsVirtualizing="True"
+                                              VirtualizingStackPanel.VirtualizationMode="Recycling"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Decode raw data">
+                        <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="140"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,8">
+                                Paste hexadecimal (Event Viewer RawData) or Base64.
+                            </TextBlock>
+                            <TextBlock Grid.Row="1" Text="Input" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBox x:Name="ManualInputText"
+                                     Grid.Row="2"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     FontFamily="Consolas"
+                                     FontSize="12"
+                                     TextWrapping="Wrap"
+                                     BorderBrush="{StaticResource BorderBrush}"/>
+                            <Button x:Name="DecodeManualButton"
+                                    Grid.Row="3"
+                                    Content="Decode"
+                                    Padding="14,6"
+                                    HorizontalAlignment="Left"
+                                    Margin="0,8,0,8"
+                                    Click="DecodeManualButton_OnClick"/>
+                            <TextBlock Grid.Row="4" Text="Decoded output" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <Border Grid.Row="5" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Background="White" MinHeight="200">
+                                <Grid>
+                                    <TextBox x:Name="ManualOutputText"
+                                             IsReadOnly="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             FontFamily="Consolas"
+                                             FontSize="12"
+                                             TextWrapping="NoWrap"
+                                             Background="#FAFAFC"
+                                             BorderThickness="0"
+                                             Padding="8"/>
+                                    <TreeView x:Name="ManualOutputTree"
+                                              Visibility="Collapsed"
+                                              BorderThickness="0"
+                                              Padding="4,8"
+                                              FontSize="13"
+                                              VirtualizingStackPanel.IsVirtualizing="True"
+                                              VirtualizingStackPanel.VirtualizationMode="Recycling"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>
