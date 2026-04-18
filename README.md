@@ -72,3 +72,5 @@ This project is released under the [MIT License](LICENSE).
 ## Disclaimer
 
 This tool is provided for diagnostics and education. Decoded output depends on the quality and version of the input binary data; always validate critical conclusions against official documentation and vendor guidance.
+
+**Note**: The decoding logic is inspired by https://github.com/ralish/DecodeWheaRecord repo.
