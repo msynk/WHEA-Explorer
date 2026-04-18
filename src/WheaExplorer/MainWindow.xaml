@@ -57,11 +57,39 @@
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="#444"
+                            <CheckBox x:Name="ShowSelectionRawCheckBox"
+                                      Grid.Row="0"
+                                      Content="Show raw event data"
+                                      Margin="0,0,0,6"
+                                      Checked="ShowSelectionRawCheckBox_OnChanged"
+                                      Unchecked="ShowSelectionRawCheckBox_OnChanged"/>
+                            <Border x:Name="SelectionRawPanel"
+                                    Grid.Row="1"
+                                    Visibility="Collapsed"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Background="White"
+                                    MaxHeight="200"
+                                    Margin="0,0,0,8">
+                                <TextBox x:Name="SelectionRawDataText"
+                                         IsReadOnly="True"
+                                         VerticalScrollBarVisibility="Auto"
+                                         HorizontalScrollBarVisibility="Disabled"
+                                         FontFamily="Consolas"
+                                         FontSize="12"
+                                         TextWrapping="Wrap"
+                                         Background="#FAFAFC"
+                                         BorderThickness="0"
+                                         Padding="8"/>
+                            </Border>
+                            <TextBlock Grid.Row="2" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="#444"
                                        Text="Structured fields for the selected log entry. Expand nodes in Tree view to browse nested data."/>
-                            <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Background="White">
+                            <Border Grid.Row="3" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Background="White">
                                 <Grid>
                                     <TextBox x:Name="SelectionJsonText"
                                              IsReadOnly="True"

@@ -98,14 +98,26 @@ public partial class MainWindow
         JsonTreeVisualizer.Populate(ManualOutputTree, formatted);
     }
 
+    private void ShowSelectionRawCheckBox_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (SelectionRawPanel is null)
+            return;
+        SelectionRawPanel.Visibility = ShowSelectionRawCheckBox.IsChecked == true
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
     private void LogListView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (LogListView.SelectedItem is not WheaLogEntry entry)
         {
             SelectionJsonText.Clear();
             JsonTreeVisualizer.Populate(SelectionTreeView, "");
+            SelectionRawDataText.Clear();
             return;
         }
+
+        SelectionRawDataText.Text = entry.RawHex;
 
         try
         {
